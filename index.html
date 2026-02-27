@@ -1,189 +1,103 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI神器工坊 - 真正可用的AI工具</title>
+<title>AI神器工坊</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--primary:#00d2ff;--bg:#0a0a0f;--card:rgba(255,255,255,0.03);--text:#fff;--muted:#888}
-body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-.container{max-width:800px;margin:0 auto;padding:20px}
+body{font-family:-apple-system,sans-serif;background:#0a0a0f;color:#fff;min-height:100vh;padding:20px}
 h1{text-align:center;padding:30px 0;background:linear-gradient(90deg,#00d2ff,#3a7bd5);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .nav{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
-.nav button{flex:1;padding:12px;background:var(--card);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--muted);cursor:pointer}
+.nav button{flex:1;padding:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#888;cursor:pointer}
 .nav button.active{background:linear-gradient(90deg,#00d2ff,#3a7bd5);color:#fff}
 .panel{display:none}
 .panel.active{display:block}
-.tool{background:var(--card);padding:25px;border-radius:16px;margin-top:20px}
-.tool h2{font-size:1.3rem;margin-bottom:15px}
-label{display:block;margin:15px 0 8px;color:var(--muted)}
+.tool{background:rgba(255,255,255,0.03);padding:25px;border-radius:16px;margin-top:20px}
+label{display:block;margin:15px 0 8px;color:#888}
 input,select,textarea{width:100%;padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(0,0,0,0.3);color:#fff;font-size:1rem}
-textarea{min-height:100px;resize:vertical}
-.btn{width:100%;padding:14px;margin-top:15px;background:linear-gradient(90deg,#00d2ff,#3a7bd5);border:none;border-radius:8px;color:#fff;font-size:1rem;font-weight:600;cursor:pointer}
-.output{margin-top:20px;padding:15px;background:rgba(0,0,0,0.3);border-radius:8px;white-space:pre-wrap;line-height:1.6;display:none}
-.loading{padding:20px;text-align:center;color:var(--muted)}
-.tips{background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);padding:15px;border-radius:8px;margin-bottom:20px;color:#00ff88}
+textarea{min-height:100px}
+.btn{width:100%;padding:14px;margin-top:15px;background:linear-gradient(90deg,#00d2ff,#3a7bd5);border:none;border-radius:8px;color:#fff;font-size:1rem;cursor:pointer}
+.output{margin-top:20px;padding:15px;background:rgba(0,0,0,0.3);border-radius:8px;white-space:pre-wrap;display:none}
 </style>
 </head>
 <body>
-<div class="container">
 <h1>🤖 AI神器工坊</h1>
-<div class="tips">⚡ 服务上线了！选择工具开始使用</div>
 <div class="nav">
-<button class="active" onclick="show('writing')">✍️ 写作</button>
-<button onclick="show('image')">🎨 绘图</button>
-<button onclick="show('video')">🎬 视频</button>
-<button onclick="show('data')">📊 数据</button>
-<button onclick="show('trading')">📈 交易</button>
+<button class="active" onclick="show('w')">✍️ 写作</button>
+<button onclick="show('i')">🎨 绘图</button>
+<button onclick="show('v')">🎬 视频</button>
+<button onclick="show('d')">📊 数据</button>
+<button onclick="show('t')">📈 交易</button>
 </div>
-<div id="writing" class="panel active">
+<div id="w" class="panel active">
 <div class="tool">
-<h2>✍️ AI写作助手</h2>
-<select id="w-type">
-<option value="article">📝 文章</option>
-<option value="ad">📣 广告文案</option>
-<option value="social">💬 社交媒体</option>
-<option value="email">📧 商业邮件</option>
-<option value="product">🛍️ 产品描述</option>
-</select>
-<textarea id="w-topic" placeholder="输入主题..."></textarea>
-<button class="btn" onclick="gen('writing')">✨ 生成内容</button>
-<div id="w-output" class="output"></div>
+<h2>AI写作</h2>
+<select id="wt"><option value="1">文章</option><option value="2">广告</option><option value="3">社交媒体</option><option value="4">邮件</option></select>
+<textarea id="wp" placeholder="主题"></textarea>
+<button class="btn" onclick="gen('w')">生成</button>
+<div id="wo" class="output"></div>
 </div>
 </div>
-<div id="image" class="panel">
+<div id="i" class="panel">
 <div class="tool">
-<h2>🎨 AI绘图提示词</h2>
-<textarea id="i-desc" placeholder="描述你想要什么图片..."></textarea>
-<button class="btn" onclick="gen('image')">🎨 生成提示词</button>
-<div id="i-output" class="output"></div>
+<h2>AI绘图</h2>
+<textarea id="ip" placeholder="描述图片"></textarea>
+<button class="btn" onclick="gen('i')">生成</button>
+<div id="io" class="output"></div>
 </div>
 </div>
-<div id="video" class="panel">
+<div id="v" class="panel">
 <div class="tool">
-<h2>🎬 AI视频脚本</h2>
-<textarea id="v-topic" placeholder="输入视频主题..."></textarea>
-<select id="v-style">
-<option value="educational">📚 知识教程</option>
-<option value="promotional">📣 推广</option>
-<option value="vlog">🌟 Vlog</option>
-</select>
-<button class="btn" onclick="gen('video')">🎬 生成脚本</button>
-<div id="v-output" class="output"></div>
+<h2>AI视频</h2>
+<textarea id="vp" placeholder="主题"></textarea>
+<button class="btn" onclick="gen('v')">生成</button>
+<div id="vo" class="output"></div>
 </div>
 </div>
-<div id="data" class="panel">
+<div id="d" class="panel">
 <div class="tool">
-<h2>📊 AI数据分析</h2>
-<textarea id="d-data" placeholder="粘贴数据，如：日期,销售额"></textarea>
-<input id="d-question" placeholder="你想分析什么？">
-<button class="btn" onclick="gen('data')">📊 开始分析</button>
-<div id="d-output" class="output"></div>
+<h2>AI分析</h2>
+<textarea id="dp" placeholder="数据"></textarea>
+<input id="dq" placeholder="问题">
+<button class="btn" onclick="gen('d')">分析</button>
+<div id="do" class="output"></div>
 </div>
 </div>
-<div id="trading" class="panel">
+<div id="t" class="panel">
 <div class="tool">
-<h2>📈 AI交易策略</h2>
-<select id="t-market">
-<option value="crypto">₿ 加密货币</option>
-<option value="stock">📈 股票</option>
-</select>
-<input id="t-symbol" placeholder="输入交易品种，如 BTC">
-<button class="btn" onclick="gen('trading')">🔮 生成信号</button>
-<div id="t-output" class="output"></div>
-</div>
+<h2>AI交易</h2>
+<select id="tm"><option value="crypto">加密货币</option><option value="stock">股票</option></select>
+<input id="ts" placeholder="如 BTC">
+<button class="btn" onclick="gen('t')">分析</button>
+<div id="to" class="output"></div>
 </div>
 </div>
 <script>
-// 直接使用智谱AI API
-const ZHIPU_API_KEY = '51d844a1668448a2bd3d29a7e1c1d8da.pU4Sru3IIXy10kiS';
-const ZHIPU_API_URL = 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
-
-async function callZhipu(prompt, system) {
-    const response = await fetch(ZHIPU_API_URL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${ZHIPU_API_KEY}`
-        },
-        body: JSON.stringify({
-            model: 'glm-4',
-            messages: [
-                {role: 'system', content: system},
-                {role: 'user', content: prompt}
-            ]
-        })
-    });
-    const data = await response.json();
-    if (data.choices && data.choices[0]) {
-        return data.choices[0].message.content;
-    }
-    return 'API错误: ' + JSON.stringify(data);
+const api='https://open.bigmodel.cn/api/paas/v4/chat/completions';
+const key='51d844a1668448a2bd3d29a7e1c1d8da.pU4Sru3IIXy10kiS';
+async function call(p,s){
+const r=await fetch(api,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+body:JSON.stringify({model:'glm-4',messages:[{role:'system',content:s},{role:'user',content:p}]})});
+const d=await r.json();
+return d.choices?d.choices[0].message.content:'错误:'+JSON.stringify(d);
 }
-
-function show(id) {
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    event.target.classList.add('active');
+function show(id){
+document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+event.target.classList.add('active');
 }
-
-async function gen(type) {
-    let output, prompt, system;
-    
-    if (type === 'writing') {
-        const wtype = document.getElementById('w-type').value;
-        const topic = document.getElementById('w-topic').value;
-        output = document.getElementById('w-output');
-        const prompts = {
-            article: `写一篇关于"${topic}"的文章，800-1500字`,
-            ad: `写一段关于"${topic}"的广告文案`,
-            social: `写一条关于"${topic}"的社交媒体推文`,
-            email: `写一封关于"${topic}"的商业邮件`,
-            product: `写一个关于"${topic}"的产品描述`
-        };
-        prompt = prompts[wtype];
-        system = '你是一个专业文案';
-    } else if (type === 'image') {
-        const desc = document.getElementById('i-desc').value;
-        output = document.getElementById('i-output');
-        prompt = `把以下描述优化成英文AI绘图提示词：${desc}`;
-        system = '你是AI绘画专家';
-    } else if (type === 'video') {
-        const topic = document.getElementById('v-topic').value;
-        output = document.getElementById('v-output');
-        prompt = `写一个关于"${topic}"的视频脚本`;
-        system = '你是视频编导';
-    } else if (type === 'data') {
-        const data = document.getElementById('d-data').value;
-        const question = document.getElementById('d-question').value;
-        output = document.getElementById('d-output');
-        prompt = `分析数据：${data}，问题：${question}`;
-        system = '你是数据分析师';
-    } else if (type === 'trading') {
-        const market = document.getElementById('t-market').value;
-        const symbol = document.getElementById('t-symbol').value;
-        output = document.getElementById('t-output');
-        prompt = `分析${market}市场${symbol}，给交易建议`;
-        system = '你是金融分析师';
-    }
-    
-    if (!prompt || prompt.includes('undefined')) {
-        output.textContent = '请输入内容';
-        output.style.display = 'block';
-        return;
-    }
-    
-    output.style.display = 'block';
-    output.innerHTML = '<div class="loading">🤔 AI思考中...</div>';
-    
-    try {
-        const result = await callZhipu(prompt, system);
-        output.textContent = result;
-    } catch (e) {
-        output.textContent = '错误: ' + e.message;
-    }
+async function gen(t){
+let o,s,p;
+if(t==='w'){o='wo';s='专业文案';p='写'+{1:'一篇关于',2:'一段关于',3:'一条关于',4:'一封关于'}[document.getElementById('wt').value]+document.getElementById('wp').value+{1:'的文章',2:'的广告',3:'的推文',4:'的邮件'}[document.getElementById('wt').value];}
+if(t==='i'){o='io';s='绘画专家';p='优化成英文AI绘图提示词：'+document.getElementById('ip').value;}
+if(t==='v'){o='vo';s='视频编导';p='写视频脚本：'+document.getElementById('vp').value;}
+if(t==='d'){o='do';s='分析师';p='分析数据：'+document.getElementById('dp').value+'，问题：'+document.getElementById('dq').value;}
+if(t==='t'){o='to';s='金融分析师';p='分析'+document.getElementById('tm').value+'市场'+document.getElementById('ts').value+'给建议';}
+if(!p||p.includes('undefined')){document.getElementById(o).innerText='请输入内容';document.getElementById(o).style.display='block';return;}
+const el=document.getElementById(o);el.style.display='block';el.innerText='AI处理中...';
+el.innerText=await call(p,s);
 }
 </script>
 </body>
