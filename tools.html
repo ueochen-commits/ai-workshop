@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI神器工坊</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#00d2ff;--bg:#0a0a0f;--card:rgba(255,255,255,0.03);--text:#fff;--muted:#888}
+body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.container{max-width:800px;margin:0 auto;padding:20px}
+h1{text-align:center;padding:30px 0;background:linear-gradient(90deg,#00d2ff,#3a7bd5);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.nav button{flex:1;padding:12px;background:var(--card);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--muted);cursor:pointer}
+.nav button.active{background:linear-gradient(90deg,#00d2ff,#3a7bd5);color:#fff}
+.panel{display:none}
+.panel.active{display:block}
+.tool{background:var(--card);padding:25px;border-radius:16px;margin-top:20px}
+.tool h2{font-size:1.3rem;margin-bottom:15px}
+label{display:block;margin:15px 0 8px;color:var(--muted)}
+input,select,textarea{width:100%;padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(0,0,0,0.3);color:#fff;font-size:1rem}
+textarea{min-height:100px;resize:vertical}
+.btn{width:100%;padding:14px;margin-top:15px;background:linear-gradient(90deg,#00d2ff,#3a7bd5);border:none;border-radius:8px;color:#fff;font-size:1rem;font-weight:600;cursor:pointer}
+.btn:hover{opacity:0.9}
+.output{margin-top:20px;padding:15px;background:rgba(0,0,0,0.3);border-radius:8px;white-space:pre-wrap;line-height:1.6;display:none}
+.loading{padding:20px;text-align:center;color:var(--muted)}
+.error{color:#ff4444}
+.tips{background:rgba(255,170,0,0.1);border:1px solid rgba(255,170,0,0.3);padding:15px;border-radius:8px;margin-bottom:20px;font-size:0.9rem;color:#ffaa00}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🤖 AI神器工坊</h1>
+
+<div class="tips">⚡ AI服务已连接，直接使用！</div>
+
+<div class="nav">
+<button class="active" onclick="show('writing')">✍️ 写作</button>
+<button onclick="show('image')">🎨 绘图</button>
+<button onclick="show('video')">🎬 视频</button>
+<button onclick="show('data')">📊 数据</button>
+<button onclick="show('trading')">📈 交易</button>
+</div>
+
+<!-- 写作 -->
+<div id="writing" class="panel active">
+<div class="tool">
+<h2>✍️ AI写作助手</h2>
+<select id="w-type">
+<option value="article">📝 文章</option>
+<option value="ad">📣 广告文案</option>
+<option value="social">💬 社交媒体</option>
+<option value="email">📧 商业邮件</option>
+<option value="product">🛍️ 产品描述</option>
+</select>
+<textarea id="w-topic" placeholder="输入主题..."></textarea>
+<button class="btn" onclick="gen('writing')">✨ 生成内容</button>
+<div id="w-output" class="output"></div>
+</div>
+</div>
+
+<!-- 绘图 -->
+<div id="image" class="panel">
+<div class="tool">
+<h2>🎨 AI绘图提示词</h2>
+<textarea id="i-desc" placeholder="描述你想要什么图片..."></textarea>
+<button class="btn" onclick="gen('image')">🎨 生成提示词</button>
+<div id="i-output" class="output"></div>
+</div>
+</div>
+
+<!-- 视频 -->
+<div id="video" class="panel">
+<div class="tool">
+<h2>🎬 AI视频脚本</h2>
+<textarea id="v-topic" placeholder="输入视频主题..."></textarea>
+<select id="v-style">
+<option value="educational">📚 知识教程</option>
+<option value="promotional">📣 推广</option>
+<option value="vlog">🌟 Vlog</option>
+</select>
+<button class="btn" onclick="gen('video')">🎬 生成脚本</button>
+<div id="v-output" class="output"></div>
+</div>
+</div>
+
+<!-- 数据 -->
+<div id="data" class="panel">
+<div class="tool">
+<h2>📊 AI数据分析</h2>
+<textarea id="d-data" placeholder="粘贴数据，如：日期,销售额&#10;2024-01-01,1000&#10;2024-01-02,1200"></textarea>
+<input id="d-question" placeholder="你想分析什么？">
+<button class="btn" onclick="gen('data')">📊 开始分析</button>
+<div id="d-output" class="output"></div>
+</div>
+</div>
+
+<!-- 交易 -->
+<div id="trading" class="panel">
+<div class="tool">
+<h2>📈 AI交易策略</h2>
+<select id="t-market">
+<option value="crypto">₿ 加密货币</option>
+<option value="stock">📈 股票</option>
+</select>
+<input id="t-symbol" placeholder="输入交易品种，如 BTC、ETH、AAPL">
+<button class="btn" onclick="gen('trading')">🔮 生成信号</button>
+<div id="t-output" class="output"></div>
+</div>
+</div>
+</div>
+
+<script>
+const API = 'http://localhost:5000/api/';
+
+function show(id) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+}
+
+async function gen(type) {
+    let output, data = {};
+    
+    if (type === 'writing') {
+        data = {type: document.getElementById('w-type').value, topic: document.getElementById('w-topic').value};
+        output = document.getElementById('w-output');
+    } else if (type === 'image') {
+        data = {description: document.getElementById('i-desc').value};
+        output = document.getElementById('i-output');
+    } else if (type === 'video') {
+        data = {topic: document.getElementById('v-topic').value, style: document.getElementById('v-style').value};
+        output = document.getElementById('v-output');
+    } else if (type === 'data') {
+        data = {data: document.getElementById('d-data').value, question: document.getElementById('d-question').value};
+        output = document.getElementById('d-output');
+    } else if (type === 'trading') {
+        data = {market: document.getElementById('t-market').value, symbol: document.getElementById('t-symbol').value};
+        output = document.getElementById('t-output');
+    }
+    
+    if (!Object.values(data).some(v => v)) {
+        output.textContent = '请输入内容';
+        output.classList.add('error');
+        output.style.display = 'block';
+        return;
+    }
+    
+    output.style.display = 'block';
+    output.innerHTML = '<div class="loading">🤔 AI思考中...</div>';
+    
+    try {
+        const endpoint = {
+            writing: 'writing', image: 'image', video: 'video',
+            data: 'data', trading: 'trading'
+        }[type];
+        
+        const res = await fetch(API + endpoint, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        
+        const json = await res.json();
+        output.textContent = json.result || json.error;
+        output.classList.remove('error');
+    } catch (e) {
+        output.textContent = '网络错误: ' + e.message;
+        output.classList.add('error');
+    }
+}
+</script>
+</body>
+</html>
